@@ -1,0 +1,12 @@
+- name: Create VPC over AWS Cloud
+  ec2_vpc_net:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    name: "{{ vpc_name }}"
+    cidr_block: "{{ vpc_cidr_block }}"
+    region: "{{ region }}"
+    dns_support: yes
+    dns_hostnames: yes
+    tenancy: default
+    state: present
+  register: ec2_vpc_net_result
