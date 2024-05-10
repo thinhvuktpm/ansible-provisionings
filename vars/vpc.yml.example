@@ -1,0 +1,10 @@
+vpc_name: "demo-ansible"
+vpc_cidr_block: "10.0.0.0/24"
+igw_name: 'igw_name'
+zone: 'ap-southeast-1a'
+subnet_name: 'subnet_public'
+subnet_cidr_block: "10.0.0.0/24"
+route_table_name: 'route_public'
+destination_cidr_block: "0.0.0.0/0"
+security_group_name: "demo SG"
+port22_cidr_block: '0.0.0.0/0'
