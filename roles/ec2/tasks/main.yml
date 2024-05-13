@@ -1,7 +1,6 @@
 - name:  "Provisioning ec2 instance over AWS Cloud"
   ec2_instance:
     image_id: "{{ image_id }}"
-    name: "{{ OS_Names }}"
     instance_type: "{{ instance_type }}"
     region: "{{ region }}"
     key_name: "{{ key }}"
@@ -14,3 +13,22 @@
     security_group: "{{ security_group_results.group_id }}"
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
+    name: "bastion"
+
+- name:  "Provisioning ec2 instance over AWS Cloud"
+  ec2_instance:
+    image_id: "{{ image_id }}"
+    instance_type: "{{ instance_type }}"
+    region: "{{ region }}"
+    key_name: "{{ key }}"
+    wait: yes
+    count: 1
+    state: present
+    vpc_subnet_id: "{{ subnet_result.subnet.id }}"
+    network:
+      assign_public_ip: false
+    security_group: "{{ security_group_results.group_id }}"
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    name: "{{ item }}"
+  loop: "{{ OS_Names }}"

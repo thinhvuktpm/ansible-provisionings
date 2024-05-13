@@ -8,4 +8,4 @@
     - vars/ec2.yml
   roles:
     - vpc
-    - ec2
+    # - ec2

@@ -34,8 +34,24 @@
     # enable public ip
     map_public: yes
     resource_tags:
-      Name: "{{ subnet_name }}"
+      Name: "{{ subnet_public_name }}"
   register: subnet_result
+
+- name: Create VPC Subnet private
+  ec2_vpc_subnet:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    vpc_id: "{{ ec2_vpc_net_result.vpc.id }}"
+    region: "{{ region }}"
+    az: "{{ zone_private }}"      # az is the availability zone
+    state: present
+    cidr: "{{ subnet_cidr_block_private }}"
+    resource_tags:
+      Name: "{{ subnet_private_name }}"
+  register: subnet_result
+- name: Create VPC Public Subnet Route Table
+  debug:
+    msg: "{{ subnet_result }}"
 
 - name: Create VPC Public Subnet Route Table
   ec2_vpc_route_table:
