@@ -6,7 +6,22 @@ for var in aws ec2 vpc; \
 do cp -v vars/$var.yml.example vars/$var.yml; done
 ```
 
-build server
+build server on the aws
 ```bash
 ansible-playbook install_aws.yml
+```
+
+generate file setup ansible for local
+```bash
+ansible-playbook config_ansible.yml
+```
+
+ping to all server
+```bash
+ansible all -m ping -i server.ini
+```
+
+build file setup ansible for local
+```bash
+ansible-playbook config_ansible.yml
 ```

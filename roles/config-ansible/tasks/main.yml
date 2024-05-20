@@ -1,0 +1,43 @@
+- name: Get all instance bastion info
+  amazon.aws.ec2_instance_info:
+    filters:
+      instance-state-name: ["running"]
+      availability-zone: "{{ zone }}"
+      "tag:Name": "bastion"
+  register: instance_info
+- name: write file config ansible
+  shell: "{{ item }}"
+  with_items:
+    - bash -ilc "echo -e 'Host bastion \n\tUser ec2-user \n\tHostName {{ instance_info.instances[0].public_ip_address }} \n\tIdentitiesOnly yes \n\tIdentityFile ~/.ssh/{{ key }}.pem \n' > ssh_config"
+
+- name: Get all instance server info
+  amazon.aws.ec2_instance_info:
+    filters:
+      instance-state-name: ["running"]
+      availability-zone: "{{ zone }}"
+      "tag:Name": "{{ OS_Names }}"
+  register: instance_info
+
+- name: write file config ssh_config
+  shell: bash -ilc "echo -e 'Host server-0{{ my_idx + 1 }}-su \n\tUser ec2-user \n\tHostName {{ item.private_ip_address }} \n\tIdentitiesOnly yes \n\tIdentityFile ~/.ssh/{{ key }}.pem \n\tProxyJump bastion \n' >> ssh_config"
+  loop: '{{ instance_info.instances }}'
+  loop_control:
+    index_var: my_idx
+
+- name: write file config ssh_config
+  shell: bash -ilc "echo -e 'Host server-0{{ my_idx + 1 }} \n\tUser ***** \n\tHostName {{ item.private_ip_address }} \n\tIdentitiesOnly yes \n\tIdentityFile ~/.ssh/{{ key }}.pem \n\tProxyJump bastion \n' >> ssh_config"
+  loop: '{{ instance_info.instances }}'
+  loop_control:
+    index_var: my_idx
+
+- name: write file config .ini
+  shell: bash -ilc "echo -e '[app]' > server.ini"
+
+- name: write file config .ini
+  shell: bash -ilc "echo -e 'server-0{{ my_idx + 1 }}-su' >> server.ini"
+  loop: '{{ instance_info.instances }}'
+  loop_control:
+    index_var: my_idx
+
+- name: write file config file .ini
+  shell: bash -ilc "echo -e '[all:vars]\nstage=app' >> server.ini"

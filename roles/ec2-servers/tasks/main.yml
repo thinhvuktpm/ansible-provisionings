@@ -29,3 +29,21 @@
     aws_secret_key: "{{ aws_secret_key }}"
     name: "{{ item }}"
   loop: "{{ OS_Names }}"
+# - name: Get all instance ec2 info
+#   amazon.aws.ec2_instance_info:
+#     filters:
+#       instance-state-name: ["running"]
+#       "tag:Name": "bastion"
+#   register: instance_info
+
+# - name: Get all instance ec2 info
+#   amazon.aws.ec2_instance_info:
+#     filters:
+#       instance-state-name: ["running"]
+#       "tag:Name": "{{ OS_Names }}"
+#   register: instance_info
+
+# - name: DEBUG
+#   ansible.builtin.debug:
+#     msg: public_ip_address {{ item.public_ip_address }}
+#   loop: '{{ instance_info.instances }}'
