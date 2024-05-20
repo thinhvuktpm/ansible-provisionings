@@ -1,3 +1,4 @@
 project_name: 'pethouse-crm'
 project_evironment: 'production'
 name_service: "{{ project_name }}_{{ project_evironment }}"
+user_name: 'pethouse'

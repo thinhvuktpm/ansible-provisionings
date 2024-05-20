@@ -18,7 +18,7 @@ ansible-playbook config_ansible.yml
 
 ping to all server
 ```bash
-ansible all -m ping -i server.ini
+ansible all -m ping -i evironment.ini
 ```
 
 build file setup ansible for local

@@ -25,19 +25,19 @@
     index_var: my_idx
 
 - name: write file config ssh_config
-  shell: bash -ilc "echo -e 'Host server-0{{ my_idx + 1 }} \n\tUser ***** \n\tHostName {{ item.private_ip_address }} \n\tIdentitiesOnly yes \n\tIdentityFile ~/.ssh/{{ key }}.pem \n\tProxyJump bastion \n' >> ssh_config"
+  shell: bash -ilc "echo -e 'Host server-0{{ my_idx + 1 }} \n\tUser {{ user_name }} \n\tHostName {{ item.private_ip_address }} \n\tIdentitiesOnly yes \n\tIdentityFile ~/.ssh/{{ key }}.pem \n\tProxyJump bastion \n' >> ssh_config"
   loop: '{{ instance_info.instances }}'
   loop_control:
     index_var: my_idx
 
 - name: write file config .ini
-  shell: bash -ilc "echo -e '[app]' > server.ini"
+  shell: bash -ilc "echo -e '[app-{{ project_evironment }}]' > {{ project_evironment }}.ini"
 
 - name: write file config .ini
-  shell: bash -ilc "echo -e 'server-0{{ my_idx + 1 }}-su' >> server.ini"
+  shell: bash -ilc "echo -e 'server-0{{ my_idx + 1 }}-su' >> {{ project_evironment }}.ini"
   loop: '{{ instance_info.instances }}'
   loop_control:
     index_var: my_idx
 
 - name: write file config file .ini
-  shell: bash -ilc "echo -e '[all:vars]\nstage=app' >> server.ini"
+  shell: bash -ilc "echo -e '[all:vars]\nstage=app-{{ project_evironment }}' >> {{ project_evironment }}.ini"
