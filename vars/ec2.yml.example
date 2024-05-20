@@ -2,4 +2,4 @@ image_id: "ami-05b46bc4327cf9d99"
 instance_type: "t2.micro"
 key: "pethouse-crm"
 OS_Names:
-  - "chamnsible"
+  - "{{ name_service }}"

@@ -30,28 +30,12 @@
     region: "{{ region }}"
     az: "{{ zone }}"      # az is the availability zone
     state: present
-    cidr: "{{ subnet_cidr_block }}"
+    cidr: "{{ subnet_cidr_publish_block }}"
     # enable public ip
     map_public: yes
     resource_tags:
-      Name: "{{ subnet_public_name }}"
+      Name: "{{ subnet_public }}"
   register: subnet_result
-
-- name: Create VPC Subnet private
-  ec2_vpc_subnet:
-    aws_access_key: "{{ aws_access_key }}"
-    aws_secret_key: "{{ aws_secret_key }}"
-    vpc_id: "{{ ec2_vpc_net_result.vpc.id }}"
-    region: "{{ region }}"
-    az: "{{ zone_private }}"      # az is the availability zone
-    state: present
-    cidr: "{{ subnet_cidr_block_private }}"
-    resource_tags:
-      Name: "{{ subnet_private_name }}"
-  register: subnet_result
-- name: Create VPC Public Subnet Route Table
-  debug:
-    msg: "{{ subnet_result }}"
 
 - name: Create VPC Public Subnet Route Table
   ec2_vpc_route_table:
@@ -81,7 +65,9 @@
     tags:
       Name: "{{ security_group_name  }}"
     rules:
-    - proto: all
+    - proto: tcp
+      ports:
+          - 22
       cidr_ip: "{{ port22_cidr_block }}"
-      rule_desc: allow all traffic
+      rule_desc: allow ssh traffic
   register: security_group_results

@@ -1,19 +1,16 @@
-- name:  "Provisioning ec2 instance over AWS Cloud"
-  ec2_instance:
-    image_id: "{{ image_id }}"
-    instance_type: "{{ instance_type }}"
-    region: "{{ region }}"
-    key_name: "{{ key }}"
-    wait: yes
-    count: 1
-    state: present
-    vpc_subnet_id: "{{ subnet_result.subnet.id }}"
-    network:
-      assign_public_ip: true
-    security_group: "{{ security_group_results.group_id }}"
+- name: Create VPC Subnet private
+  ec2_vpc_subnet:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
-    name: "bastion"
+    vpc_id: "{{ ec2_vpc_net_result.vpc.id }}"
+    region: "{{ region }}"
+    az: "{{ zone }}"      # az is the availability zone
+    state: present
+    cidr: "{{ subnet_cidr_private_block }}"
+    # enable public ip
+    resource_tags:
+      Name: "{{ subnet_private }}"
+  register: subnet_result
 
 - name:  "Provisioning ec2 instance over AWS Cloud"
   ec2_instance:
