@@ -1,5 +1,8 @@
 image_id: "ami-05b46bc4327cf9d99"
 instance_type: "t2.micro"
-key: "example"
-OS_Names:
-  - "{{ name_service }}"
+key: "name file .pem"
+OS_Names: # list name server
+  - "{{ name_service }}_01"
+  - "{{ name_service }}_02"
+  - "{{ name_service }}_03"
+  - "{{ name_service }}_04"

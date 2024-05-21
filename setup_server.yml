@@ -1,5 +1,4 @@
-- hosts: localhost
-  connection: local
+- hosts: app-{{ project_evironment }}
   any_errors_fatal: true
   gather_facts: true
   vars_files:
@@ -8,5 +7,4 @@
     - vars/vpc.yml
     - vars/ec2.yml
   roles:
-    - vpc
-    - ec2
+    - add-user

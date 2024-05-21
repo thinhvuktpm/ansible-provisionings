@@ -25,3 +25,7 @@ build file setup ansible for local
 ```bash
 ansible-playbook config_ansible.yml
 ```
+
+```bash
+ssh -F ssh_config bastion-production
+```

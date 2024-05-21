@@ -8,7 +8,7 @@
 - name: write file config ansible
   shell: "{{ item }}"
   with_items:
-    - bash -ilc "echo -e 'Host bastion \n\tUser ec2-user \n\tHostName {{ instance_info.instances[0].public_ip_address }} \n\tIdentitiesOnly yes \n\tIdentityFile ~/.ssh/{{ key }}.pem \n' > ssh_config"
+    - bash -ilc "echo -e 'Host bastion-{{ project_evironment }} \n\tUser ec2-user \n\tHostName {{ instance_info.instances[0].public_ip_address }} \n\tIdentitiesOnly yes \n\tIdentityFile ~/.ssh/{{ key }}.pem \n' > ssh_config"
 
 - name: Get all instance server info
   amazon.aws.ec2_instance_info:
@@ -19,13 +19,13 @@
   register: instance_info
 
 - name: write file config ssh_config
-  shell: bash -ilc "echo -e 'Host server-0{{ my_idx + 1 }}-su \n\tUser ec2-user \n\tHostName {{ item.private_ip_address }} \n\tIdentitiesOnly yes \n\tIdentityFile ~/.ssh/{{ key }}.pem \n\tProxyJump bastion \n' >> ssh_config"
+  shell: bash -ilc "echo -e 'Host server-{{ project_evironment }}-0{{ my_idx + 1 }}-su \n\tUser ec2-user \n\tHostName {{ item.private_ip_address }} \n\tIdentitiesOnly yes \n\tIdentityFile ~/.ssh/{{ key }}.pem \n\tProxyJump bastion-{{ project_evironment }} \n' >> ssh_config"
   loop: '{{ instance_info.instances }}'
   loop_control:
     index_var: my_idx
 
 - name: write file config ssh_config
-  shell: bash -ilc "echo -e 'Host server-0{{ my_idx + 1 }} \n\tUser {{ user_name }} \n\tHostName {{ item.private_ip_address }} \n\tIdentitiesOnly yes \n\tIdentityFile ~/.ssh/{{ key }}.pem \n\tProxyJump bastion \n' >> ssh_config"
+  shell: bash -ilc "echo -e 'Host server-{{ project_evironment }}-0{{ my_idx + 1 }} \n\tUser {{ user_name }} \n\tHostName {{ item.private_ip_address }} \n\tIdentitiesOnly yes \n\tIdentityFile ~/.ssh/{{ key }}.pem \n\tProxyJump bastion-{{ project_evironment }} \n' >> ssh_config"
   loop: '{{ instance_info.instances }}'
   loop_control:
     index_var: my_idx
@@ -34,7 +34,7 @@
   shell: bash -ilc "echo -e '[app-{{ project_evironment }}]' > {{ project_evironment }}.ini"
 
 - name: write file config .ini
-  shell: bash -ilc "echo -e 'server-0{{ my_idx + 1 }}-su' >> {{ project_evironment }}.ini"
+  shell: bash -ilc "echo -e 'server-{{ project_evironment }}-0{{ my_idx + 1 }}-su' >> {{ project_evironment }}.ini"
   loop: '{{ instance_info.instances }}'
   loop_control:
     index_var: my_idx

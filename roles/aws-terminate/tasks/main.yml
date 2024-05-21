@@ -1,0 +1,53 @@
+- name: Get instance bastion
+  amazon.aws.ec2_instance_info:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    # filters:
+    #   instance-state-name: ["running"]
+    #   "tag:Name": "bastion"
+  register: bastion_info
+
+- name: Terminate EC2 bastion
+  ec2_instance:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ region }}"
+    instance_ids: "{{ item.instance_id }}"
+    state: absent
+  loop: '{{ bastion_info.instances }}'
+
+- name: Get all instance ec2 info
+  amazon.aws.ec2_instance_info:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    filters:
+      instance-state-name: ["running"]
+      "tag:Name": "{{ OS_Names }}"
+  register: instance_info
+
+- name: Terminate EC2 instances
+  ec2_instance:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ region }}"
+    instance_ids: "{{ item.instance_id }}"
+    state: absent
+  loop: '{{ instance_info.instances }}'
+
+- name: delete VPC
+  ec2_vpc_net:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    name: "{{ vpc_name }}"
+    cidr_block: "{{ vpc_cidr_block }}"
+    region: "{{ region }}"
+    dns_support: yes
+    dns_hostnames: yes
+    tenancy: default
+    state: absent
+  register: delete_vpc
+
+- name: DEBUG
+  ansible.builtin.debug:
+    msg: "{{ delete_vpc }}"
+#   loop: '{{ instance_info.instances }}'

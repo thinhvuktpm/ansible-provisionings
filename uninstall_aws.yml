@@ -8,5 +8,4 @@
     - vars/vpc.yml
     - vars/ec2.yml
   roles:
-    - vpc
-    - ec2
+    - aws-terminate
