@@ -1,0 +1,22 @@
+# - name: add user deploy {{ user_name }}
+#   ansible.builtin.user:
+#     name: "{{ user_name }}"
+
+- name: add sudo permision {{ user_name }}
+  shell: "{{ item }}"
+  args:
+    chdir: "/etc/sudoers.d"
+  with_items:
+    - bash -ilc "echo 'ec2-user ALL=(ALL) NOPASSWD:ALL' > 90-cloud-init-users"
+    - bash -ilc "echo '{{ user_name }} ALL=(ALL) NOPASSWD:ALL' >> 90-cloud-init-users"
+
+# - name: Set authorized key for user {{ user_name }}
+#   ansible.posix.authorized_key:
+#     user: "{{ user_name }}"
+#     state: present
+#     key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/{{ ssh_key }}.pub') }}"
+
+# - name: DEBUG
+#   ansible.builtin.debug:
+#     msg: "{{ lookup('file', lookup('env','HOME') + '/.ssh/{{ ssh_key }}.pub') }}"
+# #   loop: '{{ instance_info.instances }}'

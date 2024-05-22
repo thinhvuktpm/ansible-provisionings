@@ -47,7 +47,7 @@
     state: absent
   register: delete_vpc
 
-- name: DEBUG
-  ansible.builtin.debug:
-    msg: "{{ delete_vpc }}"
-#   loop: '{{ instance_info.instances }}'
+# - name: DEBUG
+#   ansible.builtin.debug:
+#     msg: "{{ delete_vpc }}"
+# #   loop: '{{ instance_info.instances }}'
