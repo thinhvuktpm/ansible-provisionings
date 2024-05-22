@@ -8,5 +8,6 @@
     - vars/vpc.yml
     - vars/ec2.yml
   roles:
-    - vpc
-    - ec2
+    # - vpc
+    # - ec2
+    # - elb_target_group

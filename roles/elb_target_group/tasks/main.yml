@@ -1,0 +1,35 @@
+- name: Get all instance server info
+  amazon.aws.ec2_instance_info:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ region }}"
+    filters:
+      instance-state-name: ["running"]
+      availability-zone: "{{ zone }}"
+      "tag:Name": "{{ OS_Names }}"
+  register: instance_info
+
+- name: Create a target group with instance targets
+  community.aws.elb_target_group:
+    name: "{{ target_group_name }}"
+    protocol: http
+    port: 81
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ region }}"
+    vpc_id: "{{ ec2_vpc_net_result.vpc.id }}"
+    health_check_protocol: http
+    health_check_path: /
+    successful_response_codes: "200,250-260"
+    state: present
+    wait_timeout: 200
+    wait: true
+  register: target_group
+
+- name: Register a target to a target group
+  community.aws.elb_target:
+    target_group_name: "{{ target_group_name }}"
+    target_id: "{{ item.instance_id }}"
+    target_port: 80
+    state: present
+  loop: "{{ instance_info.instances }}"

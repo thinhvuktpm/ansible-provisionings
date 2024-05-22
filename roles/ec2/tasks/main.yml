@@ -14,6 +14,7 @@
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
     name: "bastion"
+  register: ec2_bastion
 
 - name:  "Provisioning ec2 instance {{ project_evironment }}"
   ec2_instance:
@@ -32,3 +33,13 @@
     aws_secret_key: "{{ aws_secret_key }}"
     name: "{{ item }}"
   loop: "{{ OS_Names }}"
+  register: ec2_instances
+
+# - name: DEBUG bastion
+#   ansible.builtin.debug:
+#     msg: "{{ ec2_bastion }}"
+# - name: DEBUG bastion
+#   ansible.builtin.debug:
+#     msg: "{{ ec2_instances }}"
+
+#   loop: '{{ instance_info.instances }}'

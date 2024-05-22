@@ -1,12 +1,8 @@
-vpc_name: "VPC_{{ project_name }}"
 vpc_cidr_block: "10.0.0.0/24"
-igw_name: 'IGW_{{ project_name }}'
-zone: 'ap-southeast-1a'
+zone: '{{ region }}a'
 subnet_public: 'subnet_public'
 subnet_private: 'subnet_private'
 subnet_cidr_publish_block: "10.0.0.0/28"
 subnet_cidr_private_block: "10.0.0.96/28"
-route_table_name: 'route_{{ project_name }}'
 destination_cidr_block: "0.0.0.0/0"
-security_group_name: "SG_{{ project_name }}_publish"
 port22_cidr_block: '0.0.0.0/0'
