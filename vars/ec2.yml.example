@@ -1,6 +1,7 @@
 image_id: "ami-05b46bc4327cf9d99"
 instance_type: "t2.micro"
 key: "name file .pem"
+ssh_key: "id_ed25519"
 OS_Names: # list name server
   - "{{ name_service }}_01"
   - "{{ name_service }}_02"
