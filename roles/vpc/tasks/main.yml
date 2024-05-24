@@ -11,77 +11,9 @@
     state: present
   register: ec2_vpc_net_result
 
-- name: Create Internet Gateway for VPC {{ project_evironment }}
-  ec2_vpc_igw:
-    aws_access_key: "{{ aws_access_key }}"
-    aws_secret_key: "{{ aws_secret_key }}"
+- name: Save avarible vpc_ip
+  set_fact:
     vpc_id: "{{ ec2_vpc_net_result.vpc.id }}"
-    region: "{{ region }}"
-    state: present
-    tags:
-      Name: "{{ igw_name }}"
-  register: igw_result
 
-- name: Create VPC Subnet public {{ project_evironment }}
-  ec2_vpc_subnet:
-    aws_access_key: "{{ aws_access_key }}"
-    aws_secret_key: "{{ aws_secret_key }}"
-    vpc_id: "{{ ec2_vpc_net_result.vpc.id }}"
-    region: "{{ region }}"
-    az: "{{ zone }}"      # az is the availability zone
-    state: present
-    cidr: "{{ subnet_cidr_publish_block }}"
-    # enable public ip
-    map_public: yes
-    resource_tags:
-      Name: "{{ subnet_public }}"
-  register: subnet_result
-
-- name: Create VPC Public Subnet Route Table {{ project_evironment }}
-  ec2_vpc_route_table:
-    aws_access_key: "{{ aws_access_key }}"
-    aws_secret_key: "{{ aws_secret_key }}"
-    vpc_id: "{{ ec2_vpc_net_result.vpc.id }}"
-    region: "{{ region }}"
-    state: present
-    tags:
-      Name: "{{ route_table_name }}"
-    subnets: [ "{{ subnet_result.subnet.id }}" ]
-    # create routes
-    routes:
-      - dest: "{{ destination_cidr_block }}"
-        gateway_id: "{{ igw_result.gateway_id }}"
-  register: public_route_table
-
-- name: Create Security Group {{ project_evironment }}
-  ec2_group:
-    aws_access_key: "{{ aws_access_key }}"
-    aws_secret_key: "{{ aws_secret_key }}"
-    vpc_id: "{{ ec2_vpc_net_result.vpc.id }}"
-    region: "{{ region }}"
-    state: present
-    name: "{{ security_group_name }}"
-    description: "{{ security_group_name }}"
-    tags:
-      Name: "{{ security_group_name  }}"
-    rules:
-    - proto: tcp
-      ports:
-          - 22
-      cidr_ip: "{{ port22_cidr_block }}"
-      rule_desc: allow ssh traffic
-  register: security_group_results
-
-- name: Create VPC Subnet private {{ project_evironment }}
-  ec2_vpc_subnet:
-    aws_access_key: "{{ aws_access_key }}"
-    aws_secret_key: "{{ aws_secret_key }}"
-    vpc_id: "{{ ec2_vpc_net_result.vpc.id }}"
-    region: "{{ region }}"
-    az: "{{ zone }}"      # az is the availability zone
-    state: present
-    cidr: "{{ subnet_cidr_private_block }}"
-    # enable public ip
-    resource_tags:
-      Name: "{{ subnet_private }}"
-  register: subnet_private_result
+- name: Save avarible vpc_ip
+  shell: echo "vpc_id:" {{ vpc_id }} > vars/var.yml

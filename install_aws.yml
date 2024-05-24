@@ -7,7 +7,14 @@
     - vars/aws.yml
     - vars/vpc.yml
     - vars/ec2.yml
+    - vars/var.yml
   roles:
-    # - vpc
+    - vpc
+    - vpc-internet_gateway
+    - vpc-subnet
+    - { role: vpc-route_table, subnet_id: "{{ subnet_public_id }}" }
+    - { role: vpc-security_group, sg_name: "sg_local" }
+    - { role: ec2-keypair, keypair: "{{ keypair_name }}" }
+    - { role: ec2-bastion, keypair: "{{ keypair_name }}", sg_id: "{{ sg_local_id }}", subnet_id: "{{ subnet_public_id }}" }
     # - ec2
     # - elb_target_group

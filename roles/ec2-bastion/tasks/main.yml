@@ -1,0 +1,30 @@
+- name:  "Provisioning ec2 bastion {{ project_evironment }}"
+  ec2_instance:
+    image_id: "{{ image_id }}"
+    instance_type: "{{ instance_type }}"
+    region: "{{ region }}"
+    key_name: "{{ keypair }}"
+    wait: yes
+    count: 1
+    state: present
+    vpc_subnet_id: "{{ subnet_id }}"
+    network:
+      assign_public_ip: true
+    security_group: "{{ sg_id }}"
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    name: "bastion"
+  register: ec2_bastion
+
+- name: Save avarible ec2_bastion
+  set_fact:
+    bastion_id: "{{ ec2_bastion.instance_ids[0] }}"
+    bastion_private_ip: "{{ ec2_bastion.instances[0].network_interfaces[0].private_ip_address }}"
+    bastion_public_ip: "{{ ec2_bastion.instances[0].network_interfaces[0].association.public_ip }}"
+
+- name: Save avarible subnet_private_id
+  shell: "{{ item }}"
+  with_items:
+    - echo "bastion_id:" {{ bastion_id }} >> vars/var.yml
+    - echo "bastion_private_ip:" {{ bastion_private_ip }} >> vars/var.yml
+    - echo "bastion_public_ip:" {{ bastion_public_ip }} >> vars/var.yml

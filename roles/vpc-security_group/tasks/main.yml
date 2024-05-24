@@ -1,0 +1,25 @@
+- name: Create {{ sg_name }} {{ project_evironment }}
+  ec2_group:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    vpc_id: "{{ ec2_vpc_net_result.vpc.id }}"
+    region: "{{ region }}"
+    state: present
+    name: "{{ sg_name }}"
+    description: "{{ sg_name }}"
+    tags:
+      Name: "{{ sg_name  }}"
+    rules:
+    - proto: tcp
+      ports:
+          - 22
+      cidr_ip: "{{ port22_cidr_block }}"
+      rule_desc: ssh traffic
+  register: security_group_results
+
+- name: Save avarible {{ sg_name }}_id
+  set_fact:
+    "{{ sg_name }}_id": "{{ security_group_results.group_id }}"
+
+- name: Save avarible sg_local_id
+  shell: echo "{{ sg_name }}_id:" {{ security_group_results.group_id }} >> vars/var.yml

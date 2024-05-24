@@ -1,0 +1,17 @@
+- name: Create Internet Gateway for VPC {{ project_evironment }}
+  ec2_vpc_igw:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    vpc_id: "{{ vpc_id }}"
+    region: "{{ region }}"
+    state: present
+    tags:
+      Name: "{{ igw_name }}"
+  register: igw_result
+
+- name: Save avarible gateway_id
+  set_fact:
+    gateway_id: "{{ igw_result.gateway_id }}"
+
+- name: Save avarible gateway_id
+  shell: echo "gateway_id:" {{ gateway_id }} >> vars/var.yml

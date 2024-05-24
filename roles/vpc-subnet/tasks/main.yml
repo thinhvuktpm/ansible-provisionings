@@ -1,0 +1,43 @@
+- name: Create VPC Subnet public {{ project_evironment }}
+  ec2_vpc_subnet:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    vpc_id: "{{ vpc_id }}"
+    region: "{{ region }}"
+    az: "{{ zone }}"      # az is the availability zone
+    state: present
+    cidr: "{{ subnet_cidr_publish_block }}"
+    # enable public ip
+    map_public: yes
+    resource_tags:
+      Name: "{{ subnet_public }}"
+  register: subnet_public_result
+
+- name: Save avarible subnet_public_id
+  set_fact:
+    subnet_public_id: "{{ subnet_public_result.subnet.id }}"
+
+- name: Save avarible subnet_public_id
+  shell: echo "subnet_public_id:" {{ subnet_public_id }} >> vars/var.yml
+
+
+- name: Create VPC Subnet private {{ project_evironment }}
+  ec2_vpc_subnet:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    vpc_id: "{{ vpc_id }}"
+    region: "{{ region }}"
+    az: "{{ zone }}"      # az is the availability zone
+    state: present
+    cidr: "{{ subnet_cidr_private_block }}"
+    # enable public ip
+    resource_tags:
+      Name: "{{ subnet_private }}"
+  register: subnet_private_result
+
+- name: Save avarible subnet_private_id
+  set_fact:
+    subnet_private_id: "{{ subnet_private_result.subnet.id }}"
+
+- name: Save avarible subnet_private_id
+  shell: echo "subnet_private_id:" {{ subnet_private_id }} >> vars/var.yml
