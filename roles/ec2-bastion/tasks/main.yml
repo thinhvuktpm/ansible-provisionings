@@ -5,8 +5,13 @@
     region: "{{ region }}"
     instance_ids:
       - "{{ bastion_id }}"
-  register: instance_info
   when: bastion_id is defined
+  register: instance_info
+
+# - name: DEBUG
+#   ansible.builtin.debug:
+#     msg: "{{ instance_info }}"
+# #   loop: '{{ instance_info.instances }}'
 
 - name:  "Provisioning ec2 bastion {{ project_evironment }}"
   ec2_instance:
@@ -25,7 +30,7 @@
     aws_secret_key: "{{ aws_secret_key }}"
     name: "bastion"
   register: ec2_bastion
-  when: instance_info is skipped or instance_info.instances[0].state.name != "running"
+  when: instance_info is not changed or instance_info.instances[0].state.name != "running"
 
 - name: set avarible bastion
   set_fact:
@@ -40,7 +45,4 @@
     - echo "bastion_id:" {{ bastion_id }} >> vars/var.yml
     - echo "bastion_private_ip:" {{ bastion_private_ip }} >> vars/var.yml
     - echo "bastion_public_ip:" {{ bastion_public_ip }} >> vars/var.yml
-    - bash -ilc "echo -e 'Host bastion-{{ project_evironment }} \n\tUser ec2-user \n\tHostName {{ bastion_public_ip }} \n\tIdentitiesOnly yes \n\tIdentityFile ~/.ssh/{{ ssh_key }} \n' > ssh_config"
-    - bash -ilc "echo -e 'Host bastion-{{ project_evironment }}-su \n\tUser ec2-user \n\tHostName {{ bastion_public_ip }} \n\tIdentitiesOnly yes \n\tIdentityFile ~/.ssh/{{ keypair }}.pem \n' >> ssh_config"
-    - bash -ilc "echo -e '[bastion]\nbastion-{{ project_evironment }}\n\n[bastion-su]\nbastion-{{ project_evironment }}-su\n' > {{ project_evironment }}.ini"
   when: ec2_bastion is changed

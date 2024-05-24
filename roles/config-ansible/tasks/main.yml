@@ -1,9 +1,10 @@
 - name: Get instance bastion
   amazon.aws.ec2_instance_info:
-    filters:
-      instance-state-name: ["running"]
-      availability-zone: "{{ zone }}"
-      "tag:Name": "bastion"
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ region }}"
+    instance_ids:
+      - "{{ bastion_id }}"
   register: instance_info
 - name: write file config ansible
   shell: "{{ item }}"
@@ -26,14 +27,14 @@
 
 - name: Get all instance server info
   amazon.aws.ec2_instance_info:
-    filters:
-      instance-state-name: ["running"]
-      availability-zone: "{{ zone }}"
-      "tag:Name": "{{ OS_Names }}"
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ region }}"
+    instance_ids: "{{ ec2_ids }}"
   register: instance_info
 
 - name: write file config ssh_config
-  shell: bash -ilc "echo -e 'Host server-{{ project_evironment }}-0{{ my_idx + 1 }}-su \n\tUser ec2-user \n\tHostName {{ item.private_ip_address }} \n\tIdentitiesOnly yes \n\tIdentityFile ~/.ssh/{{ key }}.pem \n\tProxyJump bastion-{{ project_evironment }} \n' >> ssh_config"
+  shell: bash -ilc "echo -e 'Host server-{{ project_evironment }}-0{{ my_idx + 1 }}-su \n\tUser ec2-user \n\tHostName {{ item.private_ip_address }} \n\tIdentitiesOnly yes \n\tIdentityFile ~/.ssh/{{ key }}.pem \n\tProxyJump bastion-{{ project_evironment }}-su \n' >> ssh_config"
   loop: '{{ instance_info.instances }}'
   loop_control:
     index_var: my_idx

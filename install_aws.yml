@@ -9,12 +9,13 @@
     - vars/ec2.yml
     - vars/var.yml
   roles:
-    # - vpc
-    # - vpc-internet_gateway
-    # - vpc-subnet
-    # - { role: vpc-route_table, subnet_id: "{{ subnet_public_id }}" }
-    # - { role: vpc-security_group, sg_name: "sg_local" }
-    # - { role: ec2-keypair, keypair: "{{ keypair_name }}" }
-    # - { role: ec2-bastion, keypair: "{{ keypair_name }}", sg_id: "{{ sg_local_id }}", subnet_id: "{{ subnet_public_id }}" }
-    # - { role: vpc-security_group, sg_name: "sg_bastion", port22_cidr_block: "{{ bastion_private_ip }}/24" }
+    - vpc
+    - vpc-internet_gateway
+    - vpc-subnet
+    - { role: vpc-route_table, subnet_id: "{{ subnet_public_id }}" }
+    - { role: vpc-security_group, sg_name: "sg_local" }
+    - { role: ec2-keypair, keypair: "{{ keypair_name }}" }
+    - { role: ec2-bastion, keypair: "{{ keypair_name }}", sg_id: "{{ sg_local_id }}", subnet_id: "{{ subnet_public_id }}" }
+    - { role: vpc-security_group, sg_name: "sg_bastion", port22_cidr_block: "{{ bastion_private_ip }}/24" }
     - { role: ec2, keypair: "{{ keypair_name }}", sg_id: "{{ sg_bastion_id }}", subnet_id: "{{ subnet_private_id }}" }
+    - { role: config-ansible, key: "{{ keypair_name }}" }

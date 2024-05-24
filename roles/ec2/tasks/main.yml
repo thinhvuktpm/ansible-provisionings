@@ -1,4 +1,4 @@
-- name: Get instance bastion
+- name: Get instance server
   amazon.aws.ec2_instance_info:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
@@ -7,7 +7,7 @@
   register: ec2_result
   when: ec2_ids is defined
 
-- name: set check instance
+- name: set check instance server
   set_fact:
     check_names: "{{ check_names + [item.tags.Name] }}"
   when: item.state.name=='running'
@@ -25,11 +25,6 @@
         }
       }
     ]
-
-# - name: DEBUG
-#   ansible.builtin.debug:
-#     msg: "{{ check_names }}"
-  # loop: '{{ instance_info.instances }}'
 
 - name:  "Provisioning ec2 instance {{ project_evironment }}"
   ec2_instance:
