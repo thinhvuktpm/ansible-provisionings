@@ -9,9 +9,11 @@
       Name: "{{ igw_name }}"
   register: igw_result
 
-- name: Save avarible gateway_id
+- name: set avarible gateway_id
   set_fact:
     gateway_id: "{{ igw_result.gateway_id }}"
+  when: igw_result.changed
 
 - name: Save avarible gateway_id
   shell: echo "gateway_id:" {{ gateway_id }} >> vars/var.yml
+  when: igw_result.changed

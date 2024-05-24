@@ -1,4 +1,4 @@
-- name: Get all instance bastion info
+- name: Get instance bastion
   amazon.aws.ec2_instance_info:
     filters:
       instance-state-name: ["running"]

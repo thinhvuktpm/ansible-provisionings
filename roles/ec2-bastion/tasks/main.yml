@@ -1,3 +1,13 @@
+- name: Get instance bastion
+  amazon.aws.ec2_instance_info:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ region }}"
+    instance_ids:
+      - "{{ bastion_id }}"
+  register: instance_info
+  when: bastion_id is defined
+
 - name:  "Provisioning ec2 bastion {{ project_evironment }}"
   ec2_instance:
     image_id: "{{ image_id }}"
@@ -15,16 +25,22 @@
     aws_secret_key: "{{ aws_secret_key }}"
     name: "bastion"
   register: ec2_bastion
+  when: instance_info is skipped or instance_info.instances[0].state.name != "running"
 
-- name: Save avarible ec2_bastion
+- name: set avarible bastion
   set_fact:
     bastion_id: "{{ ec2_bastion.instance_ids[0] }}"
     bastion_private_ip: "{{ ec2_bastion.instances[0].network_interfaces[0].private_ip_address }}"
     bastion_public_ip: "{{ ec2_bastion.instances[0].network_interfaces[0].association.public_ip }}"
+  when: ec2_bastion is changed
 
-- name: Save avarible subnet_private_id
+- name: Save avarible bastion
   shell: "{{ item }}"
   with_items:
     - echo "bastion_id:" {{ bastion_id }} >> vars/var.yml
     - echo "bastion_private_ip:" {{ bastion_private_ip }} >> vars/var.yml
     - echo "bastion_public_ip:" {{ bastion_public_ip }} >> vars/var.yml
+    - bash -ilc "echo -e 'Host bastion-{{ project_evironment }} \n\tUser ec2-user \n\tHostName {{ bastion_public_ip }} \n\tIdentitiesOnly yes \n\tIdentityFile ~/.ssh/{{ ssh_key }} \n' > ssh_config"
+    - bash -ilc "echo -e 'Host bastion-{{ project_evironment }}-su \n\tUser ec2-user \n\tHostName {{ bastion_public_ip }} \n\tIdentitiesOnly yes \n\tIdentityFile ~/.ssh/{{ keypair }}.pem \n' >> ssh_config"
+    - bash -ilc "echo -e '[bastion]\nbastion-{{ project_evironment }}\n\n[bastion-su]\nbastion-{{ project_evironment }}-su\n' > {{ project_evironment }}.ini"
+  when: ec2_bastion is changed

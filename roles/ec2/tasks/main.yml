@@ -1,27 +1,69 @@
+- name: Get instance bastion
+  amazon.aws.ec2_instance_info:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ region }}"
+    instance_ids: "{{ ec2_ids }}"
+  register: ec2_result
+  when: ec2_ids is defined
+
+- name: set check instance
+  set_fact:
+    check_names: "{{ check_names + [item.tags.Name] }}"
+  when: item.state.name=='running'
+  with_items: "{{ ec2_result.instances | default(arr)}}"
+  vars:
+    check_names: []
+    arr: [
+      {
+        tags:
+          {
+            Name: ''
+          },
+        state: {
+          name: 'abc'
+        }
+      }
+    ]
+
+# - name: DEBUG
+#   ansible.builtin.debug:
+#     msg: "{{ check_names }}"
+  # loop: '{{ instance_info.instances }}'
+
 - name:  "Provisioning ec2 instance {{ project_evironment }}"
   ec2_instance:
     image_id: "{{ image_id }}"
     instance_type: "{{ instance_type }}"
     region: "{{ region }}"
-    key_name: "{{ key }}"
+    key_name: "{{ keypair }}"
     wait: yes
     count: 1
     state: present
-    vpc_subnet_id: "{{ subnet_private_result.subnet.id }}"
+    vpc_subnet_id: "{{ subnet_id }}"
     network:
       assign_public_ip: false
-    security_group: "{{ security_group_results.group_id }}"
+    security_group: "{{ sg_id }}"
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
     name: "{{ item }}"
-  loop: "{{ OS_Names }}"
   register: ec2_instances
+  when: check_names is undefined or check_names is not contains(item)
+  with_items: "{{ OS_Names }}"
 
-# - name: DEBUG bastion
-#   ansible.builtin.debug:
-#     msg: "{{ ec2_bastion }}"
-# - name: DEBUG bastion
-#   ansible.builtin.debug:
-#     msg: "{{ ec2_instances }}"
+- name: set avarible ec2_ids
+  set_fact:
+    ec2_update_ids: "{{ ec2_update_ids + [item.instance_ids[0]] }}"
+    ec2_update_ips: "{{ ec2_update_ips + [item.instances[0].network_interfaces[0].private_ip_address] }}"
+  when: item is changed
+  with_items: "{{ ec2_instances.results }}"
+  vars:
+    ec2_update_ids: "{{ ec2_ids | default([]) }}"
+    ec2_update_ips: "{{ ec2_private_ips | default([]) }}"
 
-#   loop: '{{ instance_info.instances }}'
+- name: Save avarible ec2_ids
+  shell: "{{ item }}"
+  with_items:
+    - echo "ec2_ids:" {{ ec2_update_ids }} >> vars/var.yml
+    - echo "ec2_private_ips:" {{ ec2_update_ips }} >> vars/var.yml
+  when: ec2_instances is changed

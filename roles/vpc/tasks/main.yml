@@ -11,9 +11,11 @@
     state: present
   register: ec2_vpc_net_result
 
-- name: Save avarible vpc_ip
+- name: set avarible vpc_ip
   set_fact:
     vpc_id: "{{ ec2_vpc_net_result.vpc.id }}"
+  when: ec2_vpc_net_result.changed
 
 - name: Save avarible vpc_ip
-  shell: echo "vpc_id:" {{ vpc_id }} > vars/var.yml
+  shell: echo "vpc_id:" {{ vpc_id }} >> vars/var.yml
+  when: ec2_vpc_net_result.changed

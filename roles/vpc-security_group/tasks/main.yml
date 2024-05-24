@@ -2,7 +2,7 @@
   ec2_group:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
-    vpc_id: "{{ ec2_vpc_net_result.vpc.id }}"
+    vpc_id: "{{ vpc_id }}"
     region: "{{ region }}"
     state: present
     name: "{{ sg_name }}"
@@ -17,9 +17,11 @@
       rule_desc: ssh traffic
   register: security_group_results
 
-- name: Save avarible {{ sg_name }}_id
+- name: set avarible {{ sg_name }}_id
   set_fact:
     "{{ sg_name }}_id": "{{ security_group_results.group_id }}"
+  when: security_group_results.changed
 
 - name: Save avarible sg_local_id
   shell: echo "{{ sg_name }}_id:" {{ security_group_results.group_id }} >> vars/var.yml
+  when: security_group_results.changed
