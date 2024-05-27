@@ -1,15 +1,14 @@
-- name: create Loadbalance
-  amazon.aws.elb_classic_lb:
-    name: "test-vpc"
-    scheme: internal
-    state: present
-    purge_instance_ids: true
+- name: create Load balance elb_network_lb
+  community.aws.elb_network_lb:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    name: "{{ elb_name }}"
     subnets:
       - "{{ subnet_public_id }}"
     listeners:
-      - protocol: http # options are http, https, ssl, tcp
-        load_balancer_port: 80
-        instance_port: 80
-      - protocol: https # options are http, https, ssl, tcp
-        load_balancer_port: 443
-        instance_port: 80
+      - Protocol: TCP # Required. The protocol for connections from clients to the load balancer (TCP, TLS, UDP or TCP_UDP) (case-sensitive).
+        Port: 80 # Required. The port on which the load balancer is listening.
+        DefaultActions:
+          - Type: forward # Required. Only 'forward' is accepted at this time
+            TargetGroupName: "{{ target_group_name }}" # Required. The name of the target group
+    state: present

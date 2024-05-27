@@ -23,10 +23,6 @@
     wait: true
   register: target_group
 
-- name: DEBUG
-  ansible.builtin.debug:
-    msg: "{{ target_group }}"
-
 - name: Register a target to a target group
   community.aws.elb_target:
     target_group_name: "{{ target_group_name }}"
