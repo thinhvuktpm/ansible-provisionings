@@ -11,14 +11,14 @@
 # - name: DEBUG
 #   ansible.builtin.debug:
 #     msg: "{{ instance_info }}"
-# #   loop: '{{ instance_info.instances }}'
+#   loop: '{{ instance_info.instances }}'
 
 - name:  "Provisioning ec2 bastion {{ project_evironment }}"
   ec2_instance:
     image_id: "{{ image_id }}"
     instance_type: "{{ instance_type }}"
     region: "{{ region }}"
-    key_name: "{{ keypair }}"
+    key_name: "{{ keypair_name }}"
     wait: yes
     count: 1
     state: present
@@ -30,7 +30,7 @@
     aws_secret_key: "{{ aws_secret_key }}"
     name: "bastion"
   register: ec2_bastion
-  when: instance_info is not changed or instance_info.instances[0].state.name != "running"
+  when: instance_info is skipped or instance_info.instances[0].state.name != "running"
 
 - name: set avarible bastion
   set_fact:

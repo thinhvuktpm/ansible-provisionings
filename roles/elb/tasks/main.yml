@@ -1,0 +1,15 @@
+- name: create Loadbalance
+  amazon.aws.elb_classic_lb:
+    name: "test-vpc"
+    scheme: internal
+    state: present
+    purge_instance_ids: true
+    subnets:
+      - "{{ subnet_public_id }}"
+    listeners:
+      - protocol: http # options are http, https, ssl, tcp
+        load_balancer_port: 80
+        instance_port: 80
+      - protocol: https # options are http, https, ssl, tcp
+        load_balancer_port: 443
+        instance_port: 80

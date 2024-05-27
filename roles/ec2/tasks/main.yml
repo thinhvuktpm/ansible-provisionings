@@ -31,7 +31,7 @@
     image_id: "{{ image_id }}"
     instance_type: "{{ instance_type }}"
     region: "{{ region }}"
-    key_name: "{{ keypair }}"
+    key_name: "{{ keypair_name }}"
     wait: yes
     count: 1
     state: present

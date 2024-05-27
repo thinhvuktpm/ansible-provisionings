@@ -10,7 +10,7 @@
   shell: "{{ item }}"
   with_items:
     - bash -ilc "echo -e 'Host bastion-{{ project_evironment }} \n\tUser ec2-user \n\tHostName {{ instance_info.instances[0].public_ip_address }} \n\tIdentitiesOnly yes \n\tIdentityFile ~/.ssh/{{ ssh_key }} \n' > ssh_config"
-    - bash -ilc "echo -e 'Host bastion-{{ project_evironment }}-su \n\tUser ec2-user \n\tHostName {{ instance_info.instances[0].public_ip_address }} \n\tIdentitiesOnly yes \n\tIdentityFile ~/.ssh/{{ key }}.pem \n' >> ssh_config"
+    - bash -ilc "echo -e 'Host bastion-{{ project_evironment }}-su \n\tUser ec2-user \n\tHostName {{ instance_info.instances[0].public_ip_address }} \n\tIdentitiesOnly yes \n\tIdentityFile ~/.ssh/{{ keypair_name }}.pem \n' >> ssh_config"
 - name: write file config .ini
   shell: bash -ilc "echo -e '[bastion]' > {{ project_evironment }}.ini"
 
@@ -34,34 +34,26 @@
   register: instance_info
 
 - name: write file config ssh_config
-  shell: bash -ilc "echo -e 'Host server-{{ project_evironment }}-0{{ my_idx + 1 }}-su \n\tUser ec2-user \n\tHostName {{ item.private_ip_address }} \n\tIdentitiesOnly yes \n\tIdentityFile ~/.ssh/{{ key }}.pem \n\tProxyJump bastion-{{ project_evironment }}-su \n' >> ssh_config"
+  shell: bash -ilc "echo -e 'Host {{ item.tags.Name }}-su \n\tUser ec2-user \n\tHostName {{ item.private_ip_address }} \n\tIdentitiesOnly yes \n\tIdentityFile ~/.ssh/{{ keypair_name }}.pem \n\tProxyJump bastion-{{ project_evironment }}-su \n' >> ssh_config"
   loop: '{{ instance_info.instances }}'
-  loop_control:
-    index_var: my_idx
 
 - name: write file config ssh_config
-  shell: bash -ilc "echo -e 'Host server-{{ project_evironment }}-0{{ my_idx + 1 }} \n\tUser {{ user_name }} \n\tHostName {{ item.private_ip_address }} \n\tIdentitiesOnly yes \n\tIdentityFile ~/.ssh/{{ ssh_key }} \n\tProxyJump bastion-{{ project_evironment }} \n' >> ssh_config"
+  shell: bash -ilc "echo -e 'Host {{ item.tags.Name }} \n\tUser {{ user_name }} \n\tHostName {{ item.private_ip_address }} \n\tIdentitiesOnly yes \n\tIdentityFile ~/.ssh/{{ ssh_key }} \n\tProxyJump bastion-{{ project_evironment }} \n' >> ssh_config"
   loop: '{{ instance_info.instances }}'
-  loop_control:
-    index_var: my_idx
 
 - name: write file config .ini
   shell: bash -ilc "echo -e '[app-su]' >> {{ project_evironment }}.ini"
 
 - name: write file config .ini
-  shell: bash -ilc "echo -e 'server-{{ project_evironment }}-0{{ my_idx + 1 }}-su' >> {{ project_evironment }}.ini"
+  shell: bash -ilc "echo -e '{{ item.tags.Name }}-su' >> {{ project_evironment }}.ini"
   loop: '{{ instance_info.instances }}'
-  loop_control:
-    index_var: my_idx
 
 - name: write file config .ini
   shell: bash -ilc "echo -e '[app]' >> {{ project_evironment }}.ini"
 
 - name: write file config .ini
-  shell: bash -ilc "echo -e 'server-{{ project_evironment }}-0{{ my_idx + 1 }}' >> {{ project_evironment }}.ini"
+  shell: bash -ilc "echo -e '{{ item.tags.Name }}' >> {{ project_evironment }}.ini"
   loop: '{{ instance_info.instances }}'
-  loop_control:
-    index_var: my_idx
 
 - name: write file config file .ini
   shell: bash -ilc "echo -e '[all:vars]\nstage=app' >> {{ project_evironment }}.ini"

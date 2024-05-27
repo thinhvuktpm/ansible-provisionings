@@ -11,8 +11,7 @@
       Name: "{{ sg_name  }}"
     rules:
     - proto: tcp
-      ports:
-          - 22
+      ports: "{{ [22] }}"
       cidr_ip: "{{ port22_cidr_block }}"
       rule_desc: ssh traffic
   register: security_group_results
