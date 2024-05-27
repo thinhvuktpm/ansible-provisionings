@@ -1,0 +1,15 @@
+- name: Allocate a new elastic IP
+  amazon.aws.ec2_eip:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ region }}"
+    state: present
+  register: eip
+
+- name: DEBUG
+  amazon.aws.ec2_eip:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ region }}"
+    state: present
+  register: eip
