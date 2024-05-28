@@ -12,3 +12,8 @@
           - Type: forward # Required. Only 'forward' is accepted at this time
             TargetGroupName: "{{ target_group_name }}" # Required. The name of the target group
     state: present
+  register: elb
+
+- name: DEBUG
+  ansible.builtin.debug:
+    msg: "{{ elb }}"

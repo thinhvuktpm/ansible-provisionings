@@ -6,3 +6,7 @@ subnet_cidr_publish_block: "10.0.0.0/28"
 subnet_cidr_private_block: "10.0.0.96/28"
 destination_cidr_block: "0.0.0.0/0"
 port22_cidr_block: '0.0.0.0/0'
+create_with_nat: false
+create_with_internet: false
+only_ssh: false
+accept_http: false

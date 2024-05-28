@@ -17,6 +17,15 @@
   register: security_group_results
   when: only_ssh
 
+- name: set avarible {{ sg_name }}_id
+  set_fact:
+    "{{ sg_name }}_id": "{{ security_group_results.group_id }}"
+  when: security_group_results.changed
+
+- name: Save avarible sg_local_id
+  shell: echo "{{ sg_name }}_id:" {{ security_group_results.group_id }} >> vars/var.yml
+  when: security_group_results.changed
+
 - name: Create {{ sg_name }} {{ project_evironment }}
   ec2_group:
     aws_access_key: "{{ aws_access_key }}"
@@ -33,11 +42,8 @@
       ports: "{{ [22] }}"
       cidr_ip: "{{ port22_cidr_block }}"
     - proto: tcp
-      port: 80
+      ports: 80
       cidr_ip: 0.0.0.0/0
-    - proto: tcp
-      port: 443
-      group_id: amazon-elb/sg-87654321/amazon-elb-sg
   register: security_group_results
   when: accept_http
 
