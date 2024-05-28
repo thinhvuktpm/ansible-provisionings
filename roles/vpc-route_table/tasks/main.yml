@@ -1,24 +1,7 @@
-- name: Create VPC Public Subnet Route Table {{ project_evironment }}
-  ec2_vpc_route_table:
-    aws_access_key: "{{ aws_access_key }}"
-    aws_secret_key: "{{ aws_secret_key }}"
-    vpc_id: "{{ vpc_id }}"
-    region: "{{ region }}"
-    state: present
-    tags:
-      Name: "{{ route_table_name }}"
-    subnets: [ "{{ subnet_id }}" ]
-    # create routes
-    routes:
-      - dest: "{{ destination_cidr_block }}"
-        gateway_id: "{{ gateway_id }}"
-  register: route_table
+- name: Include file nat.yml
+  include_tasks: nat.yml
+  when: create_with_nat
 
-- name: set avarible route_table_id
-  set_fact:
-    route_table_id: "{{ route_table.route_table.id }}"
-  when: route_table.changed
-
-- name: Save avarible route_table_id
-  shell: echo "route_table_id:" {{ route_table_id }} >> vars/var.yml
-  when: route_table.changed
+- name: Include file internet.yml
+  include_tasks: internet.yml
+  when: create_with_internet

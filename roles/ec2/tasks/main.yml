@@ -32,7 +32,7 @@
     instance_type: "{{ instance_type }}"
     region: "{{ region }}"
     key_name: "{{ keypair_name }}"
-    wait: yes
+    wait: true
     count: 1
     state: present
     vpc_subnet_id: "{{ subnet_id }}"

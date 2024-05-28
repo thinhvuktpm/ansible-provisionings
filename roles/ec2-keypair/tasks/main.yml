@@ -1,11 +1,7 @@
-- name: Create rsa key pair
-  ec2_key:
-    aws_access_key: "{{ aws_access_key }}"
-    aws_secret_key: "{{ aws_secret_key }}"
-    region: "{{ region }}"
-    name: "{{ keypair_name }}"
-  register: ec2_key_result
-
-- name: Save private key
-  copy: content="{{ ec2_key_result.key.private_key }}" dest="~/.ssh/{{ keypair_name }}.pem" mode=0600
-  when: ec2_key_result.changed
+- name: Generate ed25519 SSH key pair
+  community.crypto.openssh_keypair:
+    path: ""
+    type: ed25519
+    state: present
+    mode: 0600
+  register: keypair_result

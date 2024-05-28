@@ -2,9 +2,9 @@
   ec2_vpc_net:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ region }}"
     name: "{{ vpc_name }}"
     cidr_block: "{{ vpc_cidr_block }}"
-    region: "{{ region }}"
     dns_support: yes
     dns_hostnames: yes
     tenancy: default
@@ -17,5 +17,5 @@
   when: ec2_vpc_net_result.changed
 
 - name: Save avarible vpc_ip
-  shell: echo "vpc_id:" {{ vpc_id }} >> vars/var.yml
+  shell: echo "vpc_id:" {{ vpc_id }} > vars/var.yml
   when: ec2_vpc_net_result.changed

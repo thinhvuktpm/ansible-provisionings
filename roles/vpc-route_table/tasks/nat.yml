@@ -1,0 +1,15 @@
+- name: Create {{ route_table_name }} {{ project_evironment }} with NAT gateway
+  ec2_vpc_route_table:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    vpc_id: "{{ vpc_id }}"
+    region: "{{ region }}"
+    state: present
+    tags:
+      Name: "{{ route_table_name }}"
+    subnets: [ "{{ subnet_id }}" ]
+    # create routes
+    routes:
+      - dest: "{{ destination_cidr_block }}"
+        instance_id: "{{ instance_value }}"
+
