@@ -9,7 +9,7 @@ do cp -v vars/$var.yml.example vars/$var.yml; done
 ***
 build server on the aws
 ```bash
-ansible-playbook install_aws.yml
+ansible-playbook install_ec2.yml
 ```
 
 ping to all server
