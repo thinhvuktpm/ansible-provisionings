@@ -1,7 +1,23 @@
 - name: Generate ed25519 SSH key pair
   community.crypto.openssh_keypair:
-    path: ""
+    path: "ssh_keys/{{ keypair_name }}"
     type: ed25519
-    state: present
-    mode: 0600
   register: keypair_result
+
+# - name: DEBUG
+#   ansible.builtin.debug:
+#     msg: "{{ keypair_result }}"
+#   loop: '{{ instance_info.instances }}'
+
+- name: Read the public key
+  slurp:
+    src: "ssh_keys/{{ keypair_name }}.pub"
+  register: pub_key_content
+
+- name: Register the key pair with AWS
+  ec2_key:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    name: "{{ keypair_name }}"
+    region: "{{ region }}"
+    key_material: "{{ pub_key_content.content | b64decode }}"

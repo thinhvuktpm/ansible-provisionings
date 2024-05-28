@@ -1,5 +1,5 @@
 vars/*.yml
-!ssh/.keep
-ssh/*
+ssh_keys/*
+!ssh_keys/.keep
 ssh_config
 *.ini

@@ -9,8 +9,8 @@
 - name: write file config ansible
   shell: "{{ item }}"
   with_items:
-    - bash -ilc "echo -e 'Host bastion-{{ project_evironment }} \n\tUser ec2-user \n\tHostName {{ instance_info.instances[0].public_ip_address }} \n\tIdentitiesOnly yes \n\tIdentityFile ~/.ssh/{{ ssh_key }} \n' > ssh_config"
-    - bash -ilc "echo -e 'Host bastion-{{ project_evironment }}-su \n\tUser ec2-user \n\tHostName {{ instance_info.instances[0].public_ip_address }} \n\tIdentitiesOnly yes \n\tIdentityFile ~/.ssh/{{ keypair_name }}.pem \n' >> ssh_config"
+    - bash -ilc "echo -e 'Host bastion-{{ project_evironment }} \n\tUser ec2-user \n\tHostName {{ instance_info.instances[0].public_ip_address }} \n\tIdentitiesOnly yes \n\tIdentityFile ssh_keys/{{ keypair_name }} \n' > ssh_config"
+    - bash -ilc "echo -e 'Host bastion-{{ project_evironment }}-su \n\tUser ec2-user \n\tHostName {{ instance_info.instances[0].public_ip_address }} \n\tIdentitiesOnly yes \n\tIdentityFile ssh_keys/{{ keypair_name }} \n' >> ssh_config"
 - name: write file config .ini
   shell: bash -ilc "echo -e '[bastion]' > {{ project_evironment }}.ini"
 
@@ -34,11 +34,11 @@
   register: instance_info
 
 - name: write file config ssh_config
-  shell: bash -ilc "echo -e 'Host {{ item.tags.Name }}-su \n\tUser ec2-user \n\tHostName {{ item.private_ip_address }} \n\tIdentitiesOnly yes \n\tIdentityFile ~/.ssh/{{ keypair_name }}.pem \n\tProxyJump bastion-{{ project_evironment }}-su \n' >> ssh_config"
+  shell: bash -ilc "echo -e 'Host {{ item.tags.Name }}-su \n\tUser ec2-user \n\tHostName {{ item.private_ip_address }} \n\tIdentitiesOnly yes \n\tIdentityFile ssh_keys/{{ keypair_name }} \n\tProxyJump bastion-{{ project_evironment }}-su \n' >> ssh_config"
   loop: '{{ instance_info.instances }}'
 
 - name: write file config ssh_config
-  shell: bash -ilc "echo -e 'Host {{ item.tags.Name }} \n\tUser {{ user_name }} \n\tHostName {{ item.private_ip_address }} \n\tIdentitiesOnly yes \n\tIdentityFile ~/.ssh/{{ ssh_key }} \n\tProxyJump bastion-{{ project_evironment }} \n' >> ssh_config"
+  shell: bash -ilc "echo -e 'Host {{ item.tags.Name }} \n\tUser {{ user_name }} \n\tHostName {{ item.private_ip_address }} \n\tIdentitiesOnly yes \n\tIdentityFile ssh_keys/{{ keypair_name }} \n\tProxyJump bastion-{{ project_evironment }} \n' >> ssh_config"
   loop: '{{ instance_info.instances }}'
 
 - name: write file config .ini

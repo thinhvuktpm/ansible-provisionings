@@ -16,12 +16,11 @@
     - vpc-nat_gateway
     - { role: vpc-route_table, route_table_name: "RT_public", subnet_id: "{{ subnet_public_id }}", instance_value: "{{ gateway_id }}", create_with_internet: true }
     - { role: vpc-route_table, route_table_name: "RT_private", subnet_id: "{{ subnet_private_id }}", instance_value: "{{ nat_gateway_id }}", create_with_internet: true }
-    - { role: vpc-security_group, sg_name: "sg_local" }
-    - { role: ec2-keypair, keypair: "{{ keypair_name }}" }
-    - { role: ec2-bastion, keypair: "{{ keypair_name }}", sg_id: "{{ sg_local_id }}", subnet_id: "{{ subnet_public_id }}" }
-    - { role: vpc-security_group, sg_name: "sg_bastion", port22_cidr_block: "{{ bastion_private_ip }}/24" }
-    - { role: ec2, keypair: "{{ keypair_name }}", sg_id: "{{ sg_bastion_id }}", subnet_id: "{{ subnet_publish_id }}" }
-    - { role: config-ansible, key: "{{ keypair_name }}" }
+    - { role: vpc-security_group, sg_name: "sg_bastion", only_ssh: true }
+    - { role: ec2-keypair }
+    - { role: ec2-bastion, sg_id: "{{ sg_bastion_id }}", subnet_id: "{{ subnet_public_id }}" }
+    - { role: vpc-security_group, sg_name: "sg_server_web", port22_cidr_block: "{{ bastion_private_ip }}/24", accept_http: true }
+    - { role: ec2, sg_id: "{{ sg_server_web_id }}", subnet_id: "{{ subnet_private_id }}" }
+    - config-ansible
     - elb_target_group
     - elb
-    # - { role: config-ansible, key: "{{ keypair_name }}" }

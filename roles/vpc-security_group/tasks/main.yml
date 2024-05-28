@@ -15,6 +15,31 @@
       cidr_ip: "{{ port22_cidr_block }}"
       rule_desc: ssh traffic
   register: security_group_results
+  when: only_ssh
+
+- name: Create {{ sg_name }} {{ project_evironment }}
+  ec2_group:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    vpc_id: "{{ vpc_id }}"
+    region: "{{ region }}"
+    state: present
+    name: "{{ sg_name }}"
+    description: "{{ sg_name }}"
+    tags:
+      Name: "{{ sg_name  }}"
+    rules:
+    - proto: tcp
+      ports: "{{ [22] }}"
+      cidr_ip: "{{ port22_cidr_block }}"
+    - proto: tcp
+      port: 80
+      cidr_ip: 0.0.0.0/0
+    - proto: tcp
+      port: 443
+      group_id: amazon-elb/sg-87654321/amazon-elb-sg
+  register: security_group_results
+  when: accept_http
 
 - name: set avarible {{ sg_name }}_id
   set_fact:
