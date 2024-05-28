@@ -12,19 +12,9 @@ build server on the aws
 ansible-playbook install_aws.yml
 ```
 
-generate file setup ansible for local
-```bash
-ansible-playbook config_ansible.yml
-```
-
 ping to all server
 ```bash
 ansible all -m ping -i evironment.ini
-```
-
-build file setup ansible for local
-```bash
-ansible-playbook setup_server.yml -i production.ini
 ```
 
 ```bash
