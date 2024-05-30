@@ -1,10 +1,10 @@
 region:
 aws_access_key:
 aws_secret_key:
-target_group_name: 'TG-{{ project_name }}-prod'
-vpc_name: "VPC_{{ name_service }}"
-igw_name: 'IGW_{{ name_service }}'
-sg_name: "SG_{{ name_service }}"
-route_table_name: 'RT_{{ name_service }}'
-elb_name: "{{ project_name }}-{{ project_evironment }}"
-keypair_name: "pethouse"
+target_group_name: '{{ name_service }}'
+vpc_name: "{{ name_service }}"
+igw_name: '{{ name_service }}'
+sg_name: "{{ name_service }}"
+route_table_name: '{{ name_service }}'
+elb_name: "{{ name_service }}"
+keypair_name: "{{ name_service }}"

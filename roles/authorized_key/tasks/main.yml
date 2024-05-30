@@ -1,5 +1,5 @@
-- name: Set authorized key for user {{ user_name }}
+- name: Set authorized key for user {{ user_deploy }}
   ansible.posix.authorized_key:
-    user: "{{ user_name }}"
+    user: "{{ user_deploy }}"
     state: present
-    key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/{{ ssh_key }}.pub') }}"
+    key: "{{ ssh_public_key }}"

@@ -1,12 +1,20 @@
-vpc_cidr_block: "10.0.0.0/24"
+vpc_cidr_block: "192.168.0.0/24"
 zone: '{{ region }}a'
 subnet_public: 'subnet_public'
 subnet_private: 'subnet_private'
-subnet_cidr_publish_block: "10.0.0.0/28"
-subnet_cidr_private_block: "10.0.0.96/28"
+subnet_cidr_publish_block: 192.168.0.0/26
+subnet_cidr_private_block: 192.168.0.128/27
 destination_cidr_block: "0.0.0.0/0"
-port22_cidr_block: '0.0.0.0/0'
+port22_cidr_block: '27.72.144.189/32'
 create_with_nat: false
 create_with_internet: false
 only_ssh: false
 accept_http: false
+
+# CIDR block 192.168.0.0/24
+#Public Subnet: 192.168.0.0/26 - list IP: 192.168.0.0 - 192.168.0.63
+#Private Subnet 1: 192.168.0.64/26 - list IP: 192.168.0.64 - 192.168.0.127
+#Private Subnet 2: 192.168.0.128/27 - list IP: 192.168.0.128 - 192.168.0.159
+#Private Subnet 3: 192.168.0.160/27 - list IP: 192.168.0.160 - 192.168.0.191
+#Private Subnet 4: 192.168.0.192/28 - list IP: 192.168.0.192 - 192.168.0.207
+#Private Subnet 5: 192.168.0.208/28 - list IP: 192.168.0.208 - 192.168.0.223

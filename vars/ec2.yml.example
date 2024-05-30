@@ -1,5 +1,7 @@
 image_id: "ami-05b46bc4327cf9d99"
 instance_type: "t2.micro"
+ssh_private_key: '~/.ssh/id_ed25519'
+ssh_public_key: '~/.ssh/id_ed25519.pub'
 OS_Names:
-  - "{{ name_service }}_01"
-  - "{{ name_service }}_02"
+  - "{{ name_service }}-01"
+  - "{{ name_service }}-02"

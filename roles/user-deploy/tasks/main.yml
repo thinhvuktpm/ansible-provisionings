@@ -1,14 +1,17 @@
-- name: add user deploy {{ user_name }}
+- name: add user deploy {{ user_deploy }}
   ansible.builtin.user:
-    name: "{{ user_name }}"
+    name: "{{ user_deploy }}"
 
-- name: add sudo permision {{ user_name }}
-  shell: "{{ item }}"
-  args:
-    chdir: "/etc/sudoers.d"
+- name: add sudoers for {{ user_deploy }}
+  become: true
+  lineinfile: >-
+     dest="/etc/sudoers"
+     state=present
+     regexp="{{ item.match }}"
+     line="{{ item.line }}"
   with_items:
-    - bash -ilc "echo 'ec2-user ALL=(ALL) NOPASSWD:ALL' > 90-cloud-init-users"
-    - bash -ilc "echo '{{ user_name }} ALL=(ALL) NOPASSWD:ALL' >> 90-cloud-init-users"
+    - { match: "{{ user_deploy }}", line: '{{ user_deploy }} ALL=(ALL) NOPASSWD: /sbin/service' }
+
 
 # - name: DEBUG
 #   ansible.builtin.debug:

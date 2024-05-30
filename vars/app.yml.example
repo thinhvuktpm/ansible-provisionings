@@ -1,0 +1,4 @@
+app_name: 'pethouse'
+project_evironment: 'prod'
+name_service: "{{ app_name }}-{{ project_evironment }}"
+user_deploy: 'pethouse'

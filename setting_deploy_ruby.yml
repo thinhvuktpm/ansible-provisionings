@@ -9,7 +9,7 @@
     - vars/vpc.yml
     - vars/ec2.yml
   roles:
-    - { role: authorized_key, user_name: 'ec2-user' }
+    - { role: authorized_key, user_deploy: 'ec2-user' }
 # - hosts: app-su
 #   any_errors_fatal: true
 #   gather_facts: true

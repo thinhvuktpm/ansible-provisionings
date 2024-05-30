@@ -16,11 +16,14 @@
 - name: set avarible subnet_public_id
   set_fact:
     subnet_public_id: "{{ subnet_public_result.subnet.id }}"
-  when: subnet_public_result.changed
+    state: present
 
 - name: Save avarible subnet_public_id
-  shell: echo "subnet_public_id:" {{ subnet_public_id }} >> vars/var.yml
-  when: subnet_public_result.changed
+  lineinfile: >-
+    dest="vars/var.yml"
+    state=present
+    regexp="subnet_public_id:"
+    line='subnet_public_id: {{ subnet_public_id }}'
 
 - name: Create VPC Subnet private {{ project_evironment }}
   ec2_vpc_subnet:
@@ -39,8 +42,11 @@
 - name: set avarible subnet_private_id
   set_fact:
     subnet_private_id: "{{ subnet_private_result.subnet.id }}"
-  when: subnet_private_result.changed
+    state: present
 
 - name: Save avarible subnet_private_id
-  shell: echo "subnet_private_id:" {{ subnet_private_id }} >> vars/var.yml
-  when: subnet_private_result.changed
+  lineinfile: >-
+    dest="vars/var.yml"
+    state=present
+    regexp="subnet_private_id:"
+    line='subnet_private_id: {{ subnet_private_id }}'

@@ -1,4 +1,4 @@
-- name: Create new nat gateway if a nat gateway does not yet exist in the subnet.
+- name: Create new nat gateway
   amazon.aws.ec2_vpc_nat_gateway:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
@@ -10,19 +10,14 @@
     if_exist_do_not_create: true
   register: nat_gateway
 
-# - name: DEBUG
-#   ansible.builtin.debug:
-#     msg: "{{ nat_gateway }}"
-
 - name: set avarible nat_gateway
   set_fact:
-    nat_gateway_id: "{{ nat_gateway.nat_gateway_id }}"
-  when: nat_gateway.changed
+    ngw_id: "{{ nat_gateway.nat_gateway_id }}"
+    state: present
 
-- name: Save avarible nat_gateway
-  shell: "{{ item }}"
-  with_items:
-    - echo "nat_gateway_id:" {{ nat_gateway_id }} >> vars/var.yml
-  when: nat_gateway.changed
-
-# #   loop: '{{ instance_info.instances }}'
+- name: Save avarible nat_gateway_id
+  lineinfile: >-
+    dest="vars/var.yml"
+    state=present
+    regexp="ngw_id:"
+    line='ngw_id: {{ ngw_id }}'
