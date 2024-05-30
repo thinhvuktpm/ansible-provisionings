@@ -1,6 +1,7 @@
 - name: add user deploy {{ user_deploy }}
   ansible.builtin.user:
     name: "{{ user_deploy }}"
+    state: present
 
 - name: add sudoers for {{ user_deploy }}
   become: true

@@ -2,4 +2,4 @@
   ansible.posix.authorized_key:
     user: "{{ user_deploy }}"
     state: present
-    key: "{{ ssh_public_key }}"
+    key: "{{ lookup('file', ssh_public_key) }}"
