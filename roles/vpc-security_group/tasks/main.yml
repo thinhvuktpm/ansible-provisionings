@@ -1,4 +1,4 @@
-- name: Create {{ sg_name }} {{ project_evironment }}
+- name: Create {{ sg_name }} {{ app_evironment }}
   ec2_group:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
@@ -30,7 +30,7 @@
     line="{{ sg_name }}_id: {{ security_group_results.group_id }}"
   when: security_group_results.changed
 
-- name: Create {{ sg_name }} {{ project_evironment }}
+- name: Create {{ sg_name }} {{ app_evironment }}
   ec2_group:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"

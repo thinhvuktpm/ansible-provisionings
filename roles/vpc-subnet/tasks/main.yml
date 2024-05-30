@@ -1,4 +1,4 @@
-- name: Create VPC Subnet public {{ project_evironment }}
+- name: Create VPC Subnet public {{ app_evironment }}
   ec2_vpc_subnet:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
@@ -25,7 +25,7 @@
     regexp="subnet_public_id:"
     line='subnet_public_id: {{ subnet_public_id }}'
 
-- name: Create VPC Subnet private {{ project_evironment }}
+- name: Create VPC Subnet private {{ app_evironment }}
   ec2_vpc_subnet:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"

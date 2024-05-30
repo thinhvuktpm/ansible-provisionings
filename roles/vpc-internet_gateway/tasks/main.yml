@@ -1,4 +1,4 @@
-- name: Create Internet Gateway for VPC {{ project_evironment }}
+- name: Create Internet Gateway for VPC {{ app_evironment }}
   ec2_vpc_igw:
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"

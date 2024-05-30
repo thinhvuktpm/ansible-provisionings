@@ -26,7 +26,7 @@
       }
     ]
 
-- name:  "Provisioning ec2 instance {{ project_evironment }}"
+- name:  "Provisioning ec2 instance {{ app_evironment }}"
   ec2_instance:
     image_id: "{{ image_id }}"
     instance_type: "{{ instance_type }}"

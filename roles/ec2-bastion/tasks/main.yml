@@ -13,7 +13,7 @@
 #     msg: "{{ instance_info }}"
 #   loop: '{{ instance_info.instances }}'
 
-- name:  "Provisioning ec2 bastion {{ project_evironment }}"
+- name:  "Provisioning ec2 bastion {{ app_evironment }}"
   ec2_instance:
     image_id: "{{ image_id }}"
     instance_type: "{{ instance_type }}"
