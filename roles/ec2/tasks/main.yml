@@ -57,8 +57,16 @@
     ec2_update_ips: "{{ ec2_private_ips | default([]) }}"
 
 - name: Save avarible ec2_ids
-  shell: "{{ item }}"
-  with_items:
-    - echo "ec2_ids:" {{ ec2_update_ids }} >> vars/var.yml
-    - echo "ec2_private_ips:" {{ ec2_update_ips }} >> vars/var.yml
-  when: ec2_instances is changed
+  lineinfile: >-
+    dest="vars/var.yml"
+    state=present
+    regexp="{{ item.name }}"
+    line="{{ item.name }}: {{ item.value }}"
+  loop:
+    - { name: ec2_ids, value: "{{ ec2_update_ids }}" }
+    - { name: ec2_private_ips, value: "{{ ec2_update_ips }}" }
+  when: ec2_instances.changed
+
+- name: pause for 30 seconds
+  pause:
+    seconds: 30

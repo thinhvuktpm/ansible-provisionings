@@ -1,4 +1,4 @@
-image_id: "ami-05b46bc4327cf9d99"
+image_id: "ami-00beae93a2d981137"
 instance_type: "t2.micro"
 ssh_private_key: '~/.ssh/id_ed25519'
 ssh_public_key: '~/.ssh/id_ed25519.pub'

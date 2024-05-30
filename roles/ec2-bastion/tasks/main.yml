@@ -37,12 +37,17 @@
     bastion_id: "{{ ec2_bastion.instance_ids[0] }}"
     bastion_private_ip: "{{ ec2_bastion.instances[0].network_interfaces[0].private_ip_address }}"
     bastion_public_ip: "{{ ec2_bastion.instances[0].network_interfaces[0].association.public_ip }}"
-  when: ec2_bastion is changed
+    state: present
+  when: ec2_bastion.changed
 
 - name: Save avarible bastion
-  shell: "{{ item }}"
-  with_items:
-    - echo "bastion_id:" {{ bastion_id }} >> vars/var.yml
-    - echo "bastion_private_ip:" {{ bastion_private_ip }} >> vars/var.yml
-    - echo "bastion_public_ip:" {{ bastion_public_ip }} >> vars/var.yml
-  when: ec2_bastion is changed
+  lineinfile: >-
+    dest="vars/var.yml"
+    state=present
+    regexp="{{ item.name }}"
+    line="{{ item.name }}: {{ item.value }}"
+  loop:
+    - { name: bastion_id, value: "{{ bastion_id }}" }
+    - { name: bastion_private_ip, value: "{{ bastion_private_ip }}" }
+    - { name: bastion_public_ip, value: "{{ bastion_public_ip }}" }
+  when: ec2_bastion.changed
