@@ -2,3 +2,4 @@ app_name: 'pethouse'
 app_evironment: 'prod'
 name_service: "{{ app_name }}-{{ app_evironment }}"
 user_deploy: 'pethouse'
+ruby_version: 3.2.0
