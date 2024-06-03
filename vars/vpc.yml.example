@@ -1,9 +1,15 @@
 vpc_cidr_block: "192.168.0.0/24"
-zone: '{{ region }}a'
+zone:
+  - a
+  - b
 subnet_public: 'subnet_public'
 subnet_private: 'subnet_private'
-subnet_cidr_publish_block: 192.168.0.0/26
-subnet_cidr_private_block: 192.168.0.128/27
+subnet_cidr_publish_block:
+  - 192.168.0.0/26
+  - 192.168.0.64/26
+subnet_cidr_private_block:
+  - 192.168.0.128/27
+  - 192.168.0.160/27
 destination_cidr_block: "0.0.0.0/0"
 port22_cidr_block: '27.72.144.189/32'
 create_with_nat: false

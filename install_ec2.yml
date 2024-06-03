@@ -12,15 +12,15 @@
     - vpc
     - vpc-internet_gateway
     - vpc-subnet
-    # - vpc-elastic_ip
-    # - vpc-nat_gateway
+    - vpc-elastic_ip
+    - vpc-nat_gateway
     - { role: vpc-route_table, route_table_name: "RT_public", subnet_ids: "{{ subnet_public_ids }}", instance_value: "{{ gateway_id }}", create_with_internet: true }
-    # - { role: vpc-route_table, route_table_name: "RT_private", subnet_ids: "{{ subnet_private_ids }}", instance_value: "{{ ngw_id }}", create_with_nat: true }
+    - { role: vpc-route_table, route_table_name: "RT_private", subnet_ids: "{{ subnet_private_ids }}", instance_value: "{{ ngw_id }}", create_with_nat: true }
     - { role: vpc-security_group, sg_name: "sg_ssh_only", only_ssh: true }
     - { role: ec2-keypair }
     - { role: ec2-bastion, sg_id: "{{ sg_ssh_only_id }}", subnet_id: "{{ subnet_public_ids[0] }}" }
     - { role: vpc-security_group, sg_name: "sg_server_web", port22_cidr_block: "{{ bastion_private_ip }}/24", accept_http: true }
     - { role: ec2, sg_id: "{{ sg_server_web_id }}", subnet_ids: "{{ subnet_private_ids }}" }
     - config-ansible
-    - elb_target_group
+    # - elb_target_group
     # - elb
