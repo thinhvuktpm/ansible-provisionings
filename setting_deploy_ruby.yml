@@ -10,6 +10,7 @@
     - vars/ec2.yml
   roles:
     - { role: authorized_key, user_deploy: 'ec2-user' }
+    - hostname
 - hosts: app-su
   any_errors_fatal: true
   gather_facts: true
@@ -24,3 +25,5 @@
     - user-deploy
     - authorized_key
     - hostname
+    - limits
+    - rbenv

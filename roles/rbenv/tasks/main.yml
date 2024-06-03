@@ -1,0 +1,81 @@
+---
+- name: Install dependencies for rbenv
+  yum: name={{ item }} state=latest
+  with_items:
+    - git
+
+- name: Install rbenv
+  become: true
+  become_user: "{{ user_deploy }}"
+  git: repo=https://github.com/sstephenson/rbenv.git dest=~/.rbenv
+
+- name: Add ~.rbenv/bin to PATH
+  become: true
+  become_user: "{{ user_deploy }}"
+  lineinfile: >
+    dest="~/.bash_profile"
+    line="export PATH=$HOME/.rbenv/bin:$PATH"
+
+- name: Eval rbenv init in ~/.bash_profile
+  become: true
+  become_user: "{{ user_deploy }}"
+  lineinfile: >
+    dest="~/.bash_profile"
+    line='eval "$(rbenv init -)"'
+
+- name: Install dependencies for ruby-build (see. https://github.com/sstephenson/ruby-build/wiki)
+  yum: name={{ item }} state=latest
+  with_items:
+    - gcc
+    - openssl-devel
+    - libyaml-devel
+    - libffi-devel
+    - readline-devel
+    - zlib-devel
+    - gdbm-devel
+    - ncurses-devel
+
+- name: Install ruby-build as rbenv plugin
+  become: true
+  become_user: "{{ user_deploy }}"
+  git: repo=https://github.com/sstephenson/ruby-build.git dest=~/.rbenv/plugins/ruby-build
+
+# - name: Check if version is installed ruby
+#   become: true
+#   become_user: "{{ user_deploy }}"
+#   become_flags: '-i'
+#   shell: "source ~/.rbenv/plugins/ruby-build/install.sh"
+#   register: rbenv_check_install
+#   changed_when: False
+#   ignore_errors: yes
+
+- name: Install ruby
+  become: true
+  become_user: "{{ user_deploy }}"
+  become_flags: '-i'
+  command: "rbenv install {{ ruby_version }}"
+  # when: rbenv_check_install|failed
+
+- name: Check if version is the default ruby version
+  become: true
+  become_user: "{{ user_deploy }}"
+  become_flags: '-i'
+  shell: "rbenv version | grep {{ ruby_version }}"
+  register: rbenv_check_default
+  changed_when: False
+  ignore_errors: yes
+
+- name: Set default ruby version
+  become: true
+  become_user: "{{ user_deploy }}"
+  become_flags: '-i'
+  command: "rbenv global {{ ruby_version }}"
+  when: rbenv_check_default|failed
+
+- name: Install Bundler
+  become: true
+  become_user: "{{ user_deploy }}"
+  become_flags: '-i'
+  gem:
+    name: bundler
+    user_install: no

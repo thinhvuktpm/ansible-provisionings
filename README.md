@@ -17,6 +17,12 @@ ping to all server
 ansible all -m ping -i evironment.ini
 ```
 
+ssh to server
 ```bash
 ssh -F ssh_config bastion-production
+```
+
+setup ruby on rails
+```bash
+ansible-playbook setting_deploy_ruby.yml -i evironment.ini
 ```

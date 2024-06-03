@@ -28,6 +28,11 @@
     security_group: "{{ sg_id }}"
     aws_access_key: "{{ aws_access_key }}"
     aws_secret_key: "{{ aws_secret_key }}"
+    volumes:
+      - device_name: /dev/xvda
+        ebs:
+          volume_size: 30
+          delete_on_termination: true
     name: "bastion"
   register: ec2_bastion
   when: instance_info is skipped or instance_info.instances[0].state.name != "running"

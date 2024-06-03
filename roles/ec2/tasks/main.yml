@@ -36,6 +36,11 @@
     count: 1
     state: present
     vpc_subnet_id: "{{ subnet_id }}"
+    volumes:
+      - device_name: /dev/xvda
+        ebs:
+          volume_size: 30
+          delete_on_termination: true
     network:
       assign_public_ip: false
     security_group: "{{ sg_id }}"
