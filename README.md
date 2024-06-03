@@ -14,15 +14,15 @@ ansible-playbook install_ec2.yml
 
 ping to all server
 ```bash
-ansible all -m ping -i evironment.ini
+ansible all -m ping -i prod.ini
 ```
 
 ssh to server
 ```bash
-ssh -F ssh_config bastion-production
+ssh -F ssh_config bastion-prod
 ```
 
 setup ruby on rails
 ```bash
-ansible-playbook setting_deploy_ruby.yml -i evironment.ini
+ansible-playbook setting_deploy_ruby.yml -i prod.ini
 ```

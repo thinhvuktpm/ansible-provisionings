@@ -53,7 +53,7 @@
   become: true
   become_user: "{{ user_deploy }}"
   become_flags: '-i'
-  command: "rbenv install {{ ruby_version }}"
+  command: 'TMPDIR="${PWD}/tmp" rbenv install {{ ruby_version }}'
   # when: rbenv_check_install|failed
 
 - name: Check if version is the default ruby version

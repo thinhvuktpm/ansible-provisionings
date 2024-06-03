@@ -1,16 +1,16 @@
-- hosts: bastion-su
-  any_errors_fatal: true
-  gather_facts: true
-  become: yes
-  become_method: sudo
-  vars_files:
-    - vars/app.yml
-    - vars/aws.yml
-    - vars/vpc.yml
-    - vars/ec2.yml
-  roles:
-    - { role: authorized_key, user_deploy: 'ec2-user' }
-    - hostname
+# - hosts: bastion-su
+#   any_errors_fatal: true
+#   gather_facts: true
+#   become: yes
+#   become_method: sudo
+#   vars_files:
+#     - vars/app.yml
+#     - vars/aws.yml
+#     - vars/vpc.yml
+#     - vars/ec2.yml
+#   roles:
+#     - { role: authorized_key, user_deploy: 'ec2-user' }
+#     - hostname
 - hosts: app-su
   any_errors_fatal: true
   gather_facts: true
@@ -22,8 +22,8 @@
     - vars/vpc.yml
     - vars/ec2.yml
   roles:
-    - user-deploy
-    - authorized_key
-    - hostname
-    - limits
+    # - user-deploy
+    # - authorized_key
+    # - hostname
+    # - limits
     - rbenv

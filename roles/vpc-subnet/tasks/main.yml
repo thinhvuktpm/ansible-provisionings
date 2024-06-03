@@ -4,26 +4,40 @@
     aws_secret_key: "{{ aws_secret_key }}"
     vpc_id: "{{ vpc_id }}"
     region: "{{ region }}"
-    az: "{{ zone }}"      # az is the availability zone
+    az: "{{ region + zone[idx] }}"      # az is the availability zone
     state: present
-    cidr: "{{ subnet_cidr_publish_block }}"
+    cidr: "{{ item }}"
     # enable public ip
     map_public: yes
     resource_tags:
-      Name: "{{ subnet_public }}"
+      Name: "{{ subnet_public }}-{{ zone[idx] }}"
+  loop: "{{ subnet_cidr_publish_block }}"
+  loop_control:
+    index_var: idx
   register: subnet_public_result
 
-- name: set avarible subnet_public_id
-  set_fact:
-    subnet_public_id: "{{ subnet_public_result.subnet.id }}"
-    state: present
+# - name: DEBUG
+#   ansible.builtin.debug:
+#     msg: "{{ subnet_public_result }}"
 
-- name: Save avarible subnet_public_id
+
+- name: set avarible subnet_public_ids
+  set_fact:
+    subnet_public_ids: "{{ subnet_public_ids + [item.subnet.id] }}"
+  when: item is changed
+  with_items: "{{ subnet_public_result.results }}"
+  vars:
+    subnet_public_ids: []
+
+- name: Save avarible subnet_public_ids
   lineinfile: >-
     dest="vars/var.yml"
     state=present
-    regexp="subnet_public_id:"
-    line='subnet_public_id: {{ subnet_public_id }}'
+    regexp="{{ item.name }}"
+    line="{{ item.name }}: {{ item.value }}"
+  loop:
+    - { name: subnet_public_ids, value: "{{ subnet_public_ids }}" }
+  when: subnet_public_result.changed
 
 - name: Create VPC Subnet private {{ app_evironment }}
   ec2_vpc_subnet:
@@ -31,22 +45,31 @@
     aws_secret_key: "{{ aws_secret_key }}"
     vpc_id: "{{ vpc_id }}"
     region: "{{ region }}"
-    az: "{{ zone }}"      # az is the availability zone
+    az: "{{ region + zone[idx] }}"      # az is the availability zone
     state: present
-    cidr: "{{ subnet_cidr_private_block }}"
+    cidr: "{{ item }}"
     # enable public ip
     resource_tags:
-      Name: "{{ subnet_private }}"
+      Name: "{{ subnet_private }}-{{ zone[idx] }}"
+  loop: "{{ subnet_cidr_private_block }}"
+  loop_control:
+    index_var: idx
   register: subnet_private_result
 
-- name: set avarible subnet_private_id
+- name: set avarible subnet_private_ids
   set_fact:
-    subnet_private_id: "{{ subnet_private_result.subnet.id }}"
-    state: present
+    subnet_private_ids: "{{ subnet_private_ids + [item.subnet.id] }}"
+  when: item is changed
+  with_items: "{{ subnet_private_result.results }}"
+  vars:
+    subnet_private_ids: []
 
-- name: Save avarible subnet_private_id
+- name: Save avarible subnet_private_ids
   lineinfile: >-
     dest="vars/var.yml"
     state=present
-    regexp="subnet_private_id:"
-    line='subnet_private_id: {{ subnet_private_id }}'
+    regexp="{{ item.name }}"
+    line="{{ item.name }}: {{ item.value }}"
+  loop:
+    - { name: subnet_private_ids, value: "{{ subnet_private_ids }}" }
+  when: subnet_private_result.changed

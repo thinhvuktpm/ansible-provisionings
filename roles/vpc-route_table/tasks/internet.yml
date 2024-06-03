@@ -7,7 +7,7 @@
     state: present
     tags:
       Name: "{{ route_table_name }}"
-    subnets: [ "{{ subnet_id }}" ]
+    subnets: "{{ subnet_ids }}"
     # create routes
     routes:
       - dest: "{{ destination_cidr_block }}"

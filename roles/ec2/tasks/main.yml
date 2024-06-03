@@ -35,7 +35,7 @@
     wait: true
     count: 1
     state: present
-    vpc_subnet_id: "{{ subnet_id }}"
+    vpc_subnet_id: "{{ subnet_ids[idx] | subnet_ids[0] }}"
     volumes:
       - device_name: /dev/xvda
         ebs:
@@ -49,7 +49,9 @@
     name: "{{ item }}"
   register: ec2_instances
   when: check_names is undefined or check_names is not contains(item)
-  with_items: "{{ OS_Names }}"
+  loop: "{{ OS_Names }}"
+  loop_control:
+    index_var: idx
 
 - name: set avarible ec2_ids
   set_fact:
