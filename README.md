@@ -2,7 +2,7 @@
 
 tạo file env
 ```bash
-for var in aws ec2 vpc project var; \
+for var in aws ec2 vpc project var app; \
 do cp -v vars/$var.yml.example vars/$var.yml; done
 ```
 - file aws.yml là file khai báo key và name các services
