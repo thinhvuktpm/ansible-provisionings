@@ -35,7 +35,7 @@
     wait: true
     count: 1
     state: present
-    vpc_subnet_id: "{{ subnet_ids[idx] | subnet_ids[0] }}"
+    vpc_subnet_id: "{{ subnet_ids[idx] if subnet_ids[idx] is defined else subnet_ids[0] }}"
     volumes:
       - device_name: /dev/xvda
         ebs:
