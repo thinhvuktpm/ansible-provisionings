@@ -26,3 +26,12 @@ setup ruby on rails
 ```bash
 ansible-playbook setting_deploy_ruby.yml -i prod.ini
 ```
+--- 
+define vars/var.yml
+```bash
+app_name: name app
+app_evironment: name evironment
+name_service: name services. ex: ec2 name_tag 
+user_deploy: user deploy to ec2
+ruby_version: 3.2.0 ## not define
+```
